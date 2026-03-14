@@ -52,6 +52,11 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private User user;
+
     @Transient
     public Double getProductDiscountedPrice() {
         if (productPrice == null) return null;
