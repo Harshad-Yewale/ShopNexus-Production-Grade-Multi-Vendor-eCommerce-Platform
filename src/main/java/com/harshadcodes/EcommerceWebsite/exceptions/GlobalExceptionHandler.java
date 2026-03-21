@@ -1,6 +1,7 @@
 package com.harshadcodes.EcommerceWebsite.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,7 +16,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ErrorResponse> myMethodNotFoundException (MethodArgumentNotValidException ex){
-        Map<String,String> map=new HashMap<>();
+        Map<String,Object> map=new HashMap<>();
        ex.getBindingResult().getFieldErrors().forEach(fieldError -> map.put(fieldError.getField(),fieldError.getDefaultMessage()));
        ErrorResponse er=new ErrorResponse(HttpStatus.BAD_REQUEST.value(),LocalDateTime.now(),map);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(er);
@@ -38,6 +39,16 @@ public class GlobalExceptionHandler {
         ErrorResponse er=new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(er);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    ResponseEntity<ErrorResponse> myAuthenticationException(AuthenticationException e){
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "Bad credentials");
+        map.put("status", false);
+        ErrorResponse er=new ErrorResponse(HttpStatus.UNAUTHORIZED.value(),LocalDateTime.now(),map);
+
+        return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(er);
     }
 
 
