@@ -34,12 +34,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(er);
     }
 
-    @ExceptionHandler(Exception.class)
-    ResponseEntity<ErrorResponse> myDefaultException(DefaultException e){
-        ErrorResponse er=new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(er);
-    }
 
     @ExceptionHandler(AuthenticationException.class)
     ResponseEntity<ErrorResponse> myAuthenticationException(AuthenticationException e){
@@ -49,6 +43,14 @@ public class GlobalExceptionHandler {
         ErrorResponse er=new ErrorResponse(HttpStatus.UNAUTHORIZED.value(),LocalDateTime.now(),map);
 
         return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(er);
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    ResponseEntity<ErrorResponse> myDefaultException(Exception e){
+        ErrorResponse er=new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(er);
     }
 
 

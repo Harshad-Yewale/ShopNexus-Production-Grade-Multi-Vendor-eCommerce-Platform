@@ -59,6 +59,10 @@ public class User {
     private Set<Product> userProducts=new HashSet<>();
 
     @ToString.Exclude
+    @OneToOne(mappedBy = "user",cascade = { CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private Cart cart;
+
+    @ToString.Exclude
     @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE}
             ,fetch = FetchType.LAZY
     )

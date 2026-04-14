@@ -2,13 +2,17 @@ package com.harshadcodes.EcommerceWebsite.security.jwt;
 
 
 import com.harshadcodes.EcommerceWebsite.security.services.UserDetailsImpl;
+import com.harshadcodes.EcommerceWebsite.security.services.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.WebUtils;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -24,12 +28,35 @@ public class JwtUtils {
     @Value("${security.expirationDate}")
     private Duration expirationDate;
 
+    @Value("${security.jwtCookie}")
+    private String jwtCookie;
+
     private SecretKey key(){
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     private final Logger logger=LoggerFactory.getLogger(JwtUtils.class);
 
+
+    public String getJwtFromCookie(HttpServletRequest request){
+        Cookie cookie= WebUtils.getCookie(request,jwtCookie);
+
+        if(cookie!=null){
+            return cookie.getValue();
+        }
+        return null;
+    }
+
+
+    public ResponseCookie generateJwtFromCookie(UserDetailsImpl user){
+        String jwt=generateToken(user);
+
+        return ResponseCookie.from(jwtCookie,jwt)
+                .path("/api")
+                .httpOnly(false)
+                .maxAge(24 *60 * 60)
+                .build();
+    }
 
     public String generateToken(UserDetailsImpl user){
         return Jwts.builder()
@@ -42,15 +69,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getJwtTokenFromHeader(HttpServletRequest request){
-        String token=request.getHeader("Authorization");
 
-        logger.debug("Token : {}",token);
-        if(token!=null && token.startsWith("Bearer ")){
-            return token.substring(7);
-        }
-        return null;
-    }
 
     public Claims extractAllClaims(String token){
         return Jwts.parser()

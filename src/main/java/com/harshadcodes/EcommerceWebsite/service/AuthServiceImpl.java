@@ -14,6 +14,7 @@ import com.harshadcodes.EcommerceWebsite.repositories.UserRepository;
 import com.harshadcodes.EcommerceWebsite.security.jwt.JwtUtils;
 import com.harshadcodes.EcommerceWebsite.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,14 +50,14 @@ public class AuthServiceImpl implements AuthService{
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        String jwtToken = jwtUtils.generateToken(userDetails);
+        ResponseCookie cookie = jwtUtils.generateJwtFromCookie(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
         return new  UserInfoResponse(userDetails.getId(),
-                userDetails.getUsername(), roles, jwtToken);
+                userDetails.getUsername(), roles,cookie.toString());
     }
 
     @Override
