@@ -1,5 +1,6 @@
 package com.harshadcodes.EcommerceWebsite.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -40,6 +41,7 @@ public class User {
     @NotBlank(message = "password cannot be empty")
     @Size(min = 6,message = "password must be at least six characters long!!")
     @Column(name = "user_password",nullable = false)
+    @JsonIgnore
     private String password;
 
 
@@ -55,20 +57,16 @@ public class User {
 
 
     @ToString.Exclude
-    @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},orphanRemoval = true,mappedBy = "user")
+    @OneToMany(cascade = {CascadeType.ALL},orphanRemoval = true,mappedBy = "user")
     private Set<Product> userProducts=new HashSet<>();
 
     @ToString.Exclude
-    @OneToOne(mappedBy = "user",cascade = { CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToOne(mappedBy = "user",cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Cart cart;
 
     @ToString.Exclude
-    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE}
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL}
             ,fetch = FetchType.LAZY
-    )
-    @JoinTable(name = "user_addresses",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id")
     )
     private List<Address> addresses=new ArrayList<>();
 

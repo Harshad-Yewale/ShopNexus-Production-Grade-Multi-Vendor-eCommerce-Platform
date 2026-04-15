@@ -19,7 +19,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
-    private long addressId;
+    private Long addressId;
 
 
     @Column(name = "room_no")
@@ -45,10 +45,9 @@ public class Address {
     @NotBlank(message = "country name cannot be blank")
     private String  country;
 
-
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> user=new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Address(String roomNo, String building, String street, String city, String pincode, String country) {
         this.roomNo = roomNo;
