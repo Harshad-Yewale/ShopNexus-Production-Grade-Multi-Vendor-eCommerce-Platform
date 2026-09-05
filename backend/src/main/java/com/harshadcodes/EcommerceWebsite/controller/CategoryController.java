@@ -8,8 +8,11 @@ import com.harshadcodes.EcommerceWebsite.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -54,6 +57,11 @@ public class CategoryController {
     public ResponseEntity<String> echoMessage(
             @RequestParam(name = "message",required = false,defaultValue = "Hello") String message){
         return ResponseEntity.ok("Message : "+message);
+    }
+
+    @GetMapping("/public/csrf")
+    public ResponseEntity<Map<String, String>> primeCsrfToken(CsrfToken csrfToken) {
+        return ResponseEntity.ok(Map.of("csrfToken", csrfToken.getToken()));
     }
 }
 

@@ -61,7 +61,7 @@ public class JwtUtils {
 
         return ResponseCookie.from(jwtCookie,jwt)
                 .path("/api")
-                .httpOnly(false)
+                .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
                 .maxAge(24 *60 * 60)
@@ -82,8 +82,10 @@ public class JwtUtils {
     public ResponseCookie getCleanJwtCookie() {
         ResponseCookie cleanCookie = ResponseCookie.from(jwtCookie, null)
                 .path("/api")
+                .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
+                .maxAge(0)
                 .build();
         return cleanCookie;
     }

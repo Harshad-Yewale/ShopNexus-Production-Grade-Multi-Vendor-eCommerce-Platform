@@ -25,7 +25,7 @@ import Sellers from './components/admin/sellers/Sellers'
 import AdminOrders from './components/admin/orders/AdminOrders'
 import AdminProducts from './components/admin/products/AdminProducts'
 import Category from './components/admin/category/Category'
-import { setupInterceptors } from './api/api'
+import { primeCsrfCookie, setupInterceptors } from './api/api'
 import MyOrdersPage from './pages/myOrdersPage'
 import ProfilePage from './pages/ProfilePage'
 import SellerApplications from './components/admin/sellers/SellerApplications'
@@ -42,9 +42,10 @@ const navigate = useNavigate();
   const isAdmin = user?.roles?.includes("ROLE_ADMIN");
 
 
-  useEffect(() => {
-        setupInterceptors(navigate);
-    }, [navigate]);
+ useEffect(() => {
+      setupInterceptors(navigate);
+      primeCsrfCookie();
+  }, [navigate]);
 
   useEffect(() => {
         dispatch(checkAuth());
